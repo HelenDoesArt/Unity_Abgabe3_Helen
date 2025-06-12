@@ -2,6 +2,8 @@ using UnityEngine;
 
 public class CoinManager : MonoBehaviour
 {
+    
+    
     [SerializeField] private int scoreAmount = 0;
     [SerializeField] private UIManager uiManager;
 
@@ -15,5 +17,10 @@ public class CoinManager : MonoBehaviour
     {
         scoreAmount++;
         uiManager.UpdateCoinText(scoreAmount);
+        if (scoreAmount >= 10)
+        {
+            uiManager.ShowWinPanel();
+        }
     }
+    
 }

@@ -77,7 +77,6 @@ public class CharacterController : MonoBehaviour
         else if (other.CompareTag("obstacle"))
         {
             Debug.Log(message: "Es war ein obstacle");
-            //ToDo: Show Losescreen and disable movement
             uiManager.ShowGameOverPanel();
             rb2d.linearVelocity = Vector2.zero;
             canMove = false;
