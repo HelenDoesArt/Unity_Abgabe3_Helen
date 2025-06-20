@@ -83,6 +83,13 @@ public class CharacterController : MonoBehaviour
             
         }
         
+        else if (other.CompareTag("win"))
+        {
+            Debug.Log(message:"player wins");
+            uiManager.ShowWinPanel();
+            canMove = false;
+        }
     }
+    
 }
 

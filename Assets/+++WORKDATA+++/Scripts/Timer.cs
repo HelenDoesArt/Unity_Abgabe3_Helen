@@ -3,9 +3,9 @@ using System.Collections;
 using TMPro;
 using UnityEngine.UI;
 
-public abstract class Timer : MonoBehaviour
+public class Timer : MonoBehaviour
 {
-    UIManager uIManager;
+    [SerializeField] UIManager uIManager;
     
     [SerializeField] private TMP_Text timerText;
     private float startTime;

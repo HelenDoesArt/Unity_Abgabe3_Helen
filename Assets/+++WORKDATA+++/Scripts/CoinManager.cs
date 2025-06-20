@@ -17,10 +17,10 @@ public class CoinManager : MonoBehaviour
     {
         scoreAmount++;
         uiManager.UpdateCoinText(scoreAmount);
-        if (scoreAmount >= 10)
-        {
-            uiManager.ShowWinPanel();
-        }
+       // if (scoreAmount >= 10)
+       // {
+       //     uiManager.ShowWinPanel();
+       // }
     }
     
 }
