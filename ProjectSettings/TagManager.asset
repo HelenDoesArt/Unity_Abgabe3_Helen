@@ -5,6 +5,9 @@ TagManager:
   serializedVersion: 3
   tags:
   - win
+  - obstacle
+  - coin
+  - diamond
   layers:
   - Default
   - TransparentFX

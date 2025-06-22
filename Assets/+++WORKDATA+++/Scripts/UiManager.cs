@@ -1,77 +1,67 @@
-using System.Collections;
-using TMPro;
-using UnityEngine;
-using UnityEngine.SceneManagement;
-using UnityEngine.UI;
+using System.Collections; 
+using System.Threading; 
+using TMPro; 
+using UnityEngine; 
+using UnityEngine.SceneManagement; // Allows loading and reloading scenes
+using UnityEngine.UI; 
 
-public class UIManager : MonoBehaviour
+public class UiManager : MonoBehaviour 
 {
-    [SerializeField] private TMP_Text scoreText;
+    [SerializeField] private TMP_Text scoreText; 
 
-    [SerializeField] private GameObject MainMenuPanel;
-    
-    [SerializeField] private GameObject gameOverPanel;
-    
-    [SerializeField] private GameObject WinPanel;
-    
-    [SerializeField] private Button startGameButton;
+    [SerializeField] private GameObject MainMenuPanel; 
 
-    [SerializeField] private Button buttonReloadLevel;
+    [SerializeField] private GameObject gameOverPanel; 
 
-    [SerializeField] private GameObject menuCanvas;
-    [SerializeField] private GameObject gameCanvas;
+    [SerializeField] private GameObject WinPanel; 
 
-    void MainMenu()
+    [SerializeField] private Button startGameButton; 
+
+    [SerializeField] private Button buttonReloadLevel; 
+
+    [SerializeField] private GameObject gameCanvas; // Canvas that shows gameplay UI
+
+    private int scoreAmount; // current score value
+
+    void MainMenu() 
     {
-        menuCanvas.SetActive(true);
+        MainMenuPanel.SetActive(true); // Show the main menu panel
+        startGameButton.onClick.AddListener(StartGame); // Assign StartGame() to the start button click
+        gameOverPanel.SetActive(false); // Hide the game over panel
+        buttonReloadLevel.onClick.AddListener(ReloadLevel); // Assign ReloadLevel() to the reload button click
+        WinPanel.SetActive(false); // Hide the win panel
+    }
+
+    private void Start() 
+    {
+        MainMenu(); // Show main menu
+        gameCanvas.SetActive(false); // Hide gameplay UI at start
+    }
+
+    void StartGame() // Called when start button is pressed
+    {
+        MainMenuPanel.SetActive(false); // Hide the main menu panel
+        gameCanvas.SetActive(true); // Show the in-game UI
         
-        MainMenuPanel.SetActive(true);
-        startGameButton.onClick.AddListener(StartGame);
-        gameOverPanel.SetActive(false);
-        buttonReloadLevel.onClick.AddListener(ReloadLevel);
-        WinPanel.SetActive(false);
     }
 
-    private void Start()
+    void ReloadLevel() 
     {
-        MainMenu();
-        //menuCanvas.SetActive(true);
-        gameCanvas.SetActive(false);
-        
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex); //SceneManager gets the currently open scene and reloads it
     }
 
-    void StartGame()
+    public void UpdateCoinText(int scoreAmount) // Updates the score text on screen
     {
-        menuCanvas.SetActive(false);
-        gameCanvas.SetActive(true);
-        
-       // MainMenuPanel.SetActive(false);
+        scoreText.text = scoreAmount.ToString(); // Converts score to string and displays it
     }
 
-    public void BackToMainMenu()
+    public void ShowGameOverPanel() 
     {
-        menuCanvas.SetActive(true);
-        gameCanvas.SetActive(false);
+        gameOverPanel.SetActive(true); // Enable the game over panel
     }
 
-    void ReloadLevel()
+    public void ShowWinPanel() 
     {
-        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex); 
-        //SceneManager holt sich jetzt gerade offene Szene, die soll dann nochmal neu geladen werden 
-    }
-
-    public void UpdateCoinText(int newCoinCount)
-    {
-        scoreText.text = newCoinCount.ToString();
-    }
-
-    public void ShowGameOverPanel()
-    {
-        gameOverPanel.SetActive(true);
-    }
-    
-    public void ShowWinPanel()
-    {
-        WinPanel.SetActive(true);
+        WinPanel.SetActive(true); // Enable the win panel
     }
 }

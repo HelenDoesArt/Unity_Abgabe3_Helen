@@ -1,95 +1,95 @@
+using System.Collections; 
+using TMPro; 
 using UnityEngine;
-using UnityEngine.InputSystem;
+using UnityEngine.InputSystem; // Enables Keyboard Input System 
 
-public class CharacterController : MonoBehaviour
+public class CharacterController : MonoBehaviour 
 {
-    [SerializeField] private float speed = 4f;
-    [SerializeField] private float jumpforce = 8f;
-    //jumpforce and speed are both accessible in the unity editor through a serialized field
-    //jumpforce determines the height/ force used by the character to jump
-    private float direction = 0f;
-    //the direction is first set to zero
-    private Rigidbody2D rb2d;
+    [SerializeField] private float speed = 4f; // Movement speed (editable from the inspector)
+    [SerializeField] private float jumpforce = 8f; // Jumping power/force (editable in inspector)
+
+    private float direction = 0f; // horizontal movement 
+
+    private Rigidbody2D rb2d; // Rigidbody2D component for physics
 
     [Header("GroundCheck")]
-    [SerializeField] private Transform transformgroundCheck;
-    [SerializeField] private LayerMask layerGround;     
-    
-    [Header ("Manager")]
-    [SerializeField] private CoinManager coinManager;
-    [SerializeField] private UIManager uiManager;
-    
-    private bool canMove = true; 
-    
-    void Start()
+    [SerializeField] private Transform transformgroundCheck; //to detect if the player is on the ground
+    [SerializeField] private LayerMask layerGround; // Layer that defines what counts as "ground"
+
+    [Header("Manager")] 
+    [SerializeField] private CoinManager coinManager; // Reference to my coin manager script
+    [SerializeField] private UiManager uiManager; // Reference to my UI manager script
+
+    private bool canMove = true; // default movement is enabled
+
+    void Start() 
     {
-        rb2d = GetComponent<Rigidbody2D>();
+        rb2d = GetComponent<Rigidbody2D>(); 
+        canMove = true; // movement is enabled when starting game
     }
 
-    // Update is called once per frame
-    void Update()
+    void Update() // Called once per frame
     {
-        if (canMove)
+        if (canMove) // Only process input if movement is enabled
         {
-            direction = 0f;
-                 
-            if (Keyboard.current.aKey.isPressed)
+            direction = 0f; // Reset movement direction each frame
+
+            if (Keyboard.current.aKey.isPressed) // If 'A' key is pressed
             {
-                direction = -1;
+                direction = -1; // Move left
             }
-                 
-            if (Keyboard.current.dKey.isPressed)
+
+            if (Keyboard.current.dKey.isPressed) // If 'D' key is pressed
             {
-                direction = 1;
+                direction = 1; // Move right
             }
-         
-            if (Keyboard.current.spaceKey.wasPressedThisFrame)
+
+            if (Keyboard.current.spaceKey.wasPressedThisFrame) // If space was just pressed this frame
             {
-                Jump();
+                Jump(); 
             }
-                 
-            rb2d.linearVelocity = new Vector2(direction * speed, rb2d.linearVelocity.y);
-                 
+
+            rb2d.linearVelocity = new Vector2(direction * speed, rb2d.linearVelocity.y); // horizontal movement + vertical velocity = movement
         }
-        
     }
 
-    void Jump()
+    void Jump() // Method to make the player jump
     {
-        if (Physics2D.OverlapCircle(transformgroundCheck.position, 0.3f, layerGround))
+        if (Physics2D.OverlapCircle(transformgroundCheck.position, 0.3f, layerGround)) // If touching ground layer
         {
-            rb2d.linearVelocity = new Vector2(x:0,y:jumpforce);
+            rb2d.linearVelocity = new Vector2(x: 0, y: jumpforce); // use speed + direction to jump
         }
-        
     }
-    
-    private void OnTriggerEnter2D(Collider2D other)
+
+    private void OnTriggerEnter2D(Collider2D other) //when player collides with something
     {
-        Debug.Log(message:"Wir sind mit etwas kollidiert!");
-
-        if (other.CompareTag("coin"))
+        if (other.CompareTag("coin")) // If colliding with coin
         {
-            Debug.Log(message:"Es war eine Münze");
-            Destroy(other.gameObject);
-            coinManager.AddCoin();
+            Debug.Log(message: "player picked up coin!");
+            Destroy(other.gameObject); // Remove the coin object once player collided with it
+            coinManager.AddCoin(); // Tell coin manager to increase score
+            canMove = true; // Ensure movement is still allowed
         }
-
-        else if (other.CompareTag("obstacle"))
+        else if (other.CompareTag("diamond")) // If colliding with a diamond
         {
-            Debug.Log(message: "Es war ein obstacle");
-            uiManager.ShowGameOverPanel();
-            rb2d.linearVelocity = Vector2.zero;
-            canMove = false;
-            
+            Debug.Log(message: "player picked up diamond!");
+            Destroy(other.gameObject); // Remove the diamond object when player collided with it
+            coinManager.AddDiamond(); // Tell coin manager to increase score
+            canMove = true; // Ensure movement is still allowed
         }
-        
-        else if (other.CompareTag("win"))
+        else if (other.CompareTag("obstacle")) // If hitting an obstacle
         {
-            Debug.Log(message:"player wins");
-            uiManager.ShowWinPanel();
-            canMove = false;
+            Debug.Log(message: "player collided with an obstacle"); 
+            uiManager.ShowGameOverPanel(); // Show the Game Over UI panel
+            rb2d.linearVelocity = Vector2.zero; // Stop all movement
+        }
+        else if (other.CompareTag("win")) // If reaching the win condition
+        {
+            Debug.Log(message: "player wins"); 
+            Destroy(other.gameObject); // Remove the win trigger
+            uiManager.ShowWinPanel(); // Show the Win UI panel
+            canMove = false; // Freeze player movement
+            rb2d.linearVelocity = Vector2.zero; // Stop motion
         }
     }
-    
 }
-
