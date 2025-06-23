@@ -19,7 +19,9 @@ public class UiManager : MonoBehaviour
 
     [SerializeField] private Button buttonReloadLevel; 
 
-    [SerializeField] private GameObject gameCanvas; // Canvas that shows gameplay UI
+    [SerializeField] private GameObject gameCanvas;
+
+    [SerializeField] private GameObject ingameUI; // Canvas that shows gameplay UI
 
     private int scoreAmount; // current score value
 
@@ -30,6 +32,7 @@ public class UiManager : MonoBehaviour
         gameOverPanel.SetActive(false); // Hide the game over panel
         buttonReloadLevel.onClick.AddListener(ReloadLevel); // Assign ReloadLevel() to the reload button click
         WinPanel.SetActive(false); // Hide the win panel
+        ingameUI.SetActive(false);
     }
 
     private void Start() 
@@ -42,6 +45,7 @@ public class UiManager : MonoBehaviour
     {
         MainMenuPanel.SetActive(false); // Hide the main menu panel
         gameCanvas.SetActive(true); // Show the in-game UI
+        ingameUI.SetActive(true);
         
     }
 
@@ -58,10 +62,12 @@ public class UiManager : MonoBehaviour
     public void ShowGameOverPanel() 
     {
         gameOverPanel.SetActive(true); // Enable the game over panel
+        ingameUI.SetActive(false);
     }
 
     public void ShowWinPanel() 
     {
         WinPanel.SetActive(true); // Enable the win panel
+        ingameUI.SetActive(false);
     }
 }

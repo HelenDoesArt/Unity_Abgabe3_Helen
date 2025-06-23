@@ -10,7 +10,8 @@ public class CharacterController : MonoBehaviour
 
     private float direction = 0f; // horizontal movement 
 
-    private Rigidbody2D rb2d; // Rigidbody2D component for physics
+    private Rigidbody2D rb2d;
+    private Animator animator;// Rigidbody2D component for physics
 
     [Header("GroundCheck")]
     [SerializeField] private Transform transformgroundCheck; //to detect if the player is on the ground
@@ -19,17 +20,20 @@ public class CharacterController : MonoBehaviour
     [Header("Manager")] 
     [SerializeField] private CoinManager coinManager; // Reference to my coin manager script
     [SerializeField] private UiManager uiManager; // Reference to my UI manager script
+    [SerializeField] private TimerScript timerScript;
 
-    private bool canMove = true; // default movement is enabled
+    public bool canMove = true; // default movement is enabled
 
     void Start() 
     {
+        animator = GetComponent<Animator>();
         rb2d = GetComponent<Rigidbody2D>(); 
         canMove = true; // movement is enabled when starting game
     }
 
     void Update() // Called once per frame
     {
+
         if (canMove) // Only process input if movement is enabled
         {
             direction = 0f; // Reset movement direction each frame
@@ -48,8 +52,14 @@ public class CharacterController : MonoBehaviour
             {
                 Jump(); 
             }
-
+            
             rb2d.linearVelocity = new Vector2(direction * speed, rb2d.linearVelocity.y); // horizontal movement + vertical velocity = movement
+            animator.SetFloat("speed", Mathf.Abs(direction));
+        }
+        else
+        {
+            rb2d.linearVelocity = new Vector2(0f, rb2d.linearVelocity.y);
+            animator.SetFloat("speed", 0);
         }
     }
 
@@ -86,9 +96,9 @@ public class CharacterController : MonoBehaviour
         else if (other.CompareTag("win")) // If reaching the win condition
         {
             Debug.Log(message: "player wins"); 
-            Destroy(other.gameObject); // Remove the win trigger
             uiManager.ShowWinPanel(); // Show the Win UI panel
             canMove = false; // Freeze player movement
+            
             rb2d.linearVelocity = Vector2.zero; // Stop motion
         }
     }
